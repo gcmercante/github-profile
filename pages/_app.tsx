@@ -1,6 +1,19 @@
-import '../styles/globals.css'
+import { Gothic_A1 } from '@next/font/google'
 import type { AppProps } from 'next/app'
+import { ThemeProvider } from 'styled-components'
+import { GlobalStyle } from '../styles/global'
+import { defaultTheme } from '../styles/themes/default'
+
+const gothic = Gothic_A1({
+  weight: ['400', '700'],
+  subsets: ['latin']
+})
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return (
+    <ThemeProvider theme={defaultTheme}>
+      <GlobalStyle />
+      <Component {...pageProps} className={gothic.className} />
+    </ThemeProvider>
+  )
 }
