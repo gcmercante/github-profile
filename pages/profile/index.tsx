@@ -1,30 +1,50 @@
-import { Card } from "../../components/Card";
-import { Container, Header, RepositoryInformation, StyledImage } from "./styles";
+import { Card } from '../../components/Card'
+import {
+  Button,
+  CardContainer,
+  Container,
+  Footer,
+  Header,
+  ProfileContainer,
+  RepositoryInformation,
+  StyledImage
+} from './styles'
 
 export default function Profile() {
   return (
     <div>
-      <Header />
-      <Container>
-        <StyledImage />
+      <ProfileContainer>
+        <Header />
+        <Container>
+          <StyledImage />
 
-        <RepositoryInformation>
-          <div>
-            <span>38</span>
-            Repositories
-          </div>
-          <div>
-            <span>38</span>
-            Contributions
-          </div>
-        </RepositoryInformation>
+          <RepositoryInformation>
+            <div>
+              <span>38</span>
+              Repositories
+            </div>
+            <div>
+              <span>38</span>
+              Contributions
+            </div>
+          </RepositoryInformation>
 
-        <button>Log out</button>
+          <Button>Log out</Button>
 
+          <CardContainer>
+            <Card />
+            <Card />
+            <Card />
+            <Card />
+          </CardContainer>
+        </Container>
+      </ProfileContainer>
+      <Footer>
         <div>
-          <Card />
+          <span>Designed & built by Gabriel Mercante</span>
+          <a>Icon</a>
         </div>
-      </Container>
+      </Footer>
     </div>
   )
 }
