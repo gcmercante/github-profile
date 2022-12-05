@@ -2,8 +2,6 @@ import { GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
 import { IoLogoGithub } from 'react-icons/io5';
 import { Card } from '../../components/Card';
-import { Repository } from '../../shared/interfaces/Repository';
-import { User } from '../../shared/interfaces/User';
 import {
   Button,
   CardContainer,
@@ -14,7 +12,9 @@ import {
   ProfileContainer,
   RepositoryInformation,
   StyledImage
-} from './profile.styles';
+} from '../../components/Profile/profile.styles';
+import { Repository } from '../../shared/interfaces/Repository';
+import { User } from '../../shared/interfaces/User';
 
 interface ProfileProps {
   userData: User;
