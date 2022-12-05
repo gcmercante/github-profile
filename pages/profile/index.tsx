@@ -73,21 +73,25 @@ export default function Profile({ userData, repoData }: ProfileProps) {
 
 
 export async function getServerSideProps({ req, res }: GetServerSidePropsContext) {
-  res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59'
-  )
+  try {
+    res.setHeader(
+      'Cache-Control',
+      'public, s-maxage=10, stale-while-revalidate=59'
+    )
+    const userResponse = await fetch('http://localhost:3000/api/user');
+    const userData  = await userResponse.json();
 
-  const userResponse = await fetch('http://localhost:3000/api/user');
-  const userData  = await userResponse.json();
+    const repoResponse = await fetch('http://localhost:3000/api/repositories');
+    const repoData  = await repoResponse.json();
 
-  const repoResponse = await fetch('http://localhost:3000/api/repositories');
-  const repoData  = await repoResponse.json();
-
-  return {
-    props: {
-      userData,
-      repoData
+    return {
+      props: {
+        userData,
+        repoData
+      }
     }
+  } catch (error: any) {
+    console.log(error.message)
+    throw new Error(error.message);
   }
 }
