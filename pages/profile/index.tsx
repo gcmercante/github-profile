@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
 import { IoLogoGithub } from 'react-icons/io5';
@@ -16,6 +15,8 @@ import {
 } from '../../components/Profile/profile.styles';
 import { Repository } from '../../shared/interfaces/Repository';
 import { User } from '../../shared/interfaces/User';
+import { getRepoData } from '../api/repositories';
+import { getUserData } from '../api/user';
 
 interface ProfileProps {
   userData: User;
@@ -79,9 +80,16 @@ export async function getServerSideProps({ req, res }: GetServerSidePropsContext
       'Cache-Control',
       'public, s-maxage=10, stale-while-revalidate=59'
     )
-    const { data: userData } = await axios.get('http://localhost:3000/api/user');
 
-    const { data: repoData } = await axios.get('http://localhost:3000/api/repositories');
+
+    // const userResponse = await fetch('http://localhost:3000/api/user');
+    // const userData = await userResponse.json();
+
+    // const repoResponse = await fetch('http://localhost:3000/api/repositories');
+    // const repoData = await repoResponse.json();
+
+    const userData = await getUserData();
+    const repoData = await getRepoData();
 
     return {
       props: {

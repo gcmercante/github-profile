@@ -12,11 +12,17 @@ interface RepositoryRequest {
   data: RepositoryFromGit[]
 }
 
+export async function getRepoData() {
+  const { data } = await octokit.request('GET /users/gcmercante/repos') as RepositoryRequest;
+
+  const repos = await buildRepositoriesList(data);
+
+  return repos;
+}
+
 export default async function handler(_req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { data } = await octokit.request('GET /users/gcmercante/repos') as RepositoryRequest;
-
-    const repos = await buildRepositoriesList(data);
+    const repos = await getRepoData();
 
     return res.status(200).json(repos);
   } catch (error: any) {
