@@ -1,3 +1,4 @@
+import { GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
 import { IoLogoGithub } from 'react-icons/io5';
 import { Card } from '../../components/Card';
@@ -71,7 +72,12 @@ export default function Profile({ userData, repoData }: ProfileProps) {
 }
 
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ req, res }: GetServerSidePropsContext) {
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59'
+  )
+
   const userResponse = await fetch('http://localhost:3000/api/user');
   const userData  = await userResponse.json();
 

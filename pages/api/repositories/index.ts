@@ -4,7 +4,7 @@ import { buildRepositoriesList } from "../../../helpers/api/repositories-helper"
 import { RepositoryFromGit } from "../../../shared/interfaces/Repository";
 
 const octokit = new Octokit({
-  auth: "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"
+  auth: "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"
 })
 
 

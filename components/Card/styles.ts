@@ -9,10 +9,21 @@ export const Container = styled.div`
   background-color: ${props => props.theme.header};
   border-radius: 6px;
   flex: 1;
+  max-width: 392px;
+  min-width: 392px;
 
   header {
     font-size: 1rem;
     font-weight: 700;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+
+  @media(max-width: 400px) {
+    max-width: 270px;
+    min-width: 270px;
   }
 `
 
@@ -42,6 +53,7 @@ export const Footer = styled.footer`
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    color: ${props => props.theme.base};
 
     transition: color 0.2s;
 

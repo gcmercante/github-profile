@@ -45,6 +45,8 @@ export const RepositoryInformation = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    align-items: center;
+    justify-content: center;
 
     span {
       display: block;
@@ -56,6 +58,10 @@ export const RepositoryInformation = styled.div`
   }
 
   margin-bottom: 2rem;
+
+  @media(max-width: 400px) {
+    flex-direction: column;
+  }
 `
 
 export const Button = styled.button`
@@ -78,7 +84,7 @@ export const Button = styled.button`
 `
 
 export const Footer = styled.footer`
-  padding: 1rem 0;
+  padding: 1rem 0.5rem;
   
   div {
     margin: 0 auto;
@@ -89,6 +95,14 @@ export const Footer = styled.footer`
 
   a {
     cursor: pointer;
+    text-decoration: none;
+    color: ${props => props.theme.base};
+
+    transition: color 0.2s;
+    
+    &:hover {
+      color: ${props => props.theme.sub};
+    }
   }
 
   svg {
@@ -104,6 +118,14 @@ export const CardContainer = styled.div`
   column-gap: 1rem;
   row-gap: 2rem;
   width: 100%;
+
+  @media (max-width: 820px) {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+  }
 `
 
 export const NameContainer = styled.div`

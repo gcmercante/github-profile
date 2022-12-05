@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { IoGitNetwork, IoLogoGithub, IoPeople, IoStarOutline } from 'react-icons/io5';
 import { Repository } from '../../shared/interfaces/Repository';
 import { Container, Footer, RepositoryDescription } from "./styles";
@@ -30,7 +31,7 @@ export function Card({ repo }: CardProps) {
             <span>{repo.forks}</span>
           </div>
         </div>
-        <a><IoLogoGithub /></a>
+        <Link href={repo.url}><IoLogoGithub /></Link>
       </Footer>
     </Container>
   )
