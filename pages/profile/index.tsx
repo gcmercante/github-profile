@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
 import { IoLogoGithub } from 'react-icons/io5';
@@ -78,11 +79,9 @@ export async function getServerSideProps({ req, res }: GetServerSidePropsContext
       'Cache-Control',
       'public, s-maxage=10, stale-while-revalidate=59'
     )
-    const userResponse = await fetch('http://localhost:3000/api/user');
-    const userData  = await userResponse.json();
+    const { data: userData } = await axios.get('http://localhost:3000/api/user');
 
-    const repoResponse = await fetch('http://localhost:3000/api/repositories');
-    const repoData  = await repoResponse.json();
+    const { data: repoData } = await axios.get('http://localhost:3000/api/repositories');
 
     return {
       props: {
