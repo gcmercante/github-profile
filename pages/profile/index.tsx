@@ -1,27 +1,47 @@
-import { Card } from '../../components/Card'
+import Link from 'next/link';
+import { IoLogoGithub } from 'react-icons/io5';
+import { Card } from '../../components/Card';
+import { Repository } from '../../shared/interfaces/Repository';
+import { User } from '../../shared/interfaces/User';
 import {
   Button,
   CardContainer,
   Container,
   Footer,
   Header,
+  NameContainer,
   ProfileContainer,
   RepositoryInformation,
   StyledImage
-} from './styles'
+} from './styles';
 
-export default function Profile() {
+interface ProfileProps {
+  userData: User;
+  repoData: Repository[]
+}
+
+
+export default function Profile({ userData, repoData }: ProfileProps) {
   return (
     <div>
       <ProfileContainer>
         <Header />
         <Container>
-          <StyledImage />
+          <StyledImage url={userData.avatar} />
+
+          <NameContainer>
+            <strong>{userData.name}</strong>
+            <span>{userData.username}</span>
+          </NameContainer>
 
           <RepositoryInformation>
             <div>
-              <span>38</span>
+              <span>{userData.repositories}</span>
               Repositories
+            </div>
+            <div>
+              <span>{userData.followers}</span>
+              Followers
             </div>
             <div>
               <span>38</span>
@@ -32,19 +52,36 @@ export default function Profile() {
           <Button>Log out</Button>
 
           <CardContainer>
-            <Card />
-            <Card />
-            <Card />
-            <Card />
+            {
+              repoData.map(repo => (
+                <Card key={repo.id} repo={repo} />
+              ))
+            }
           </CardContainer>
         </Container>
       </ProfileContainer>
       <Footer>
         <div>
           <span>Designed & built by Gabriel Mercante</span>
-          <a>Icon</a>
+          <Link href={userData.url}><IoLogoGithub /></Link>
         </div>
       </Footer>
     </div>
   )
+}
+
+
+export async function getServerSideProps() {
+  const userResponse = await fetch('http://localhost:3000/api/user');
+  const userData  = await userResponse.json();
+
+  const repoResponse = await fetch('http://localhost:3000/api/repositories');
+  const repoData  = await repoResponse.json();
+
+  return {
+    props: {
+      userData,
+      repoData
+    }
+  }
 }

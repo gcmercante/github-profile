@@ -20,13 +20,17 @@ export const Container = styled.main`
   justify-content: center;
 `
 
-export const StyledImage = styled.div`
+interface StyledImageProps {
+  url: string;
+}
+
+export const StyledImage = styled.div<StyledImageProps>`
   width: 8rem;
   height: 8rem;
   overflow: hidden;
   border-radius: 999px;
   
-  background-image: url("http://github.com/gcmercante.png");
+  background-image: url(${props => props.url});
   background-size: cover;
 
   margin-top: -4rem;
@@ -45,7 +49,7 @@ export const RepositoryInformation = styled.div`
     span {
       display: block;
       margin: 0 auto;
-      padding: 0.25rem 0.5rem;
+      padding: 0 0.5rem;
       background-color: ${props => props.theme.sub};
       border-radius: 999px;
     }
@@ -62,6 +66,7 @@ export const Button = styled.button`
   padding: 0.25rem 0.5rem;
   border-radius: 6px;
   margin-bottom: 2rem;
+  font-size: 1.5rem;
 
   cursor: pointer;
 
@@ -81,6 +86,15 @@ export const Footer = styled.footer`
     display: flex;
     justify-content: space-between;
   }
+
+  a {
+    cursor: pointer;
+  }
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
 `
 
 export const CardContainer = styled.div`
@@ -90,4 +104,16 @@ export const CardContainer = styled.div`
   column-gap: 1rem;
   row-gap: 2rem;
   width: 100%;
+`
+
+export const NameContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+
+  span {
+    color: ${props => props.theme.sub};
+  }
 `

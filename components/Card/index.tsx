@@ -1,28 +1,33 @@
 import { IoGitNetwork, IoLogoGithub, IoPeople, IoStarOutline } from 'react-icons/io5';
+import { Repository } from '../../shared/interfaces/Repository';
 import { Container, Footer, RepositoryDescription } from "./styles";
 
-export function Card() {
+interface CardProps {
+  repo: Repository;
+}
+
+export function Card({ repo }: CardProps) {
   return (
     <Container>
       <header>
-        repository name
+        {repo.repositoryName}
       </header>
       <RepositoryDescription>
-        repository description
+        {repo.description}
       </RepositoryDescription>
       <Footer>
         <div>
           <div>
             <span><IoPeople/></span>
-            <span>1</span>
+            <span>{repo.watchers}</span>
           </div>
           <div>
             <span><IoStarOutline /></span>
-            <span>1</span>
+            <span>{repo.stars}</span>
           </div>
           <div>
             <span><IoGitNetwork /></span>
-            <span>1</span>
+            <span>{repo.forks}</span>
           </div>
         </div>
         <a><IoLogoGithub /></a>
