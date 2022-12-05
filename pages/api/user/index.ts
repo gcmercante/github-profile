@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Octokit } from "octokit";
 
 const octokit = new Octokit({
-  auth: "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"
+  auth: process.env.GITHUB_TOKEN,
 })
 
 export default async function handler(_req: NextApiRequest, res: NextApiResponse) {

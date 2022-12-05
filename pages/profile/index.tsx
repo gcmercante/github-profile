@@ -14,7 +14,7 @@ import {
   ProfileContainer,
   RepositoryInformation,
   StyledImage
-} from './styles';
+} from './profile.styles';
 
 interface ProfileProps {
   userData: User;
