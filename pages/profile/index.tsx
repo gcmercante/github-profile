@@ -110,7 +110,7 @@ export default function Profile({
               <Card key={repo.id} repo={repo} />
             ))}
             <div ref={endOfListRef}></div>
-            {loading && <Loader progress={25} size={10} hideLabel />}
+            {loading && <Loader progress={25} size={20} hideLabel />}
           </CardContainer>
         </Container>
       </ProfileContainer>
