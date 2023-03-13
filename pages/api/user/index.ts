@@ -1,15 +1,12 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { Octokit } from "octokit";
+import { NextApiRequest, NextApiResponse } from 'next'
+import { getGithubService } from '../../../utils/auth'
 
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
-})
+export async function getUserData(token: string) {
+  const gitHub = getGithubService(token)
 
+  const { data } = await gitHub.request('GET /users/gcmercante')
 
-export async function getUserData() {
-  const { data } = await octokit.request('GET /users/gcmercante');
-
-  const user  = {
+  const user = {
     username: data.login,
     avatar: data.avatar_url,
     url: data.html_url,
@@ -18,15 +15,20 @@ export async function getUserData() {
     followers: data.followers,
   }
 
-  return user;
+  return user
 }
 
-export default async function handler(_req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
-    const user = await getUserData();
+    const token = req.headers!.authorization as string
 
-    return res.status(200).json(user);
+    const user = await getUserData(token)
+
+    return res.status(200).json(user)
   } catch (error: any) {
-    return res.status(error.response.status).json({ message: error.message });
+    return res.status(error.response.status).json({ message: error.message })
   }
 }

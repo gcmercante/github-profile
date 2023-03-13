@@ -1,28 +1,27 @@
-import { GetServerSidePropsContext } from 'next';
-import Link from 'next/link';
-import { IoLogoGithub } from 'react-icons/io5';
-import { Card } from '../../components/Card';
+import { GetServerSidePropsContext } from 'next'
+import { getServerSession, Session } from 'next-auth'
+import Link from 'next/link'
+import { IoLogoGithub } from 'react-icons/io5'
+import { Card } from '../../components/Card'
+import { Header } from '../../components/Header'
 import {
-  Button,
   CardContainer,
   Container,
   Footer,
-  Header,
   NameContainer,
   ProfileContainer,
   RepositoryInformation,
-  StyledImage
-} from '../../components/Profile/profile.styles';
-import { Repository } from '../../shared/interfaces/Repository';
-import { User } from '../../shared/interfaces/User';
-import { getRepoData } from '../api/repositories';
-import { getUserData } from '../api/user';
+  StyledImage,
+} from '../../components/Profile/profile.styles'
+import { Repository } from '../../shared/interfaces/Repository'
+import { User } from '../../shared/interfaces/User'
+import { redirectToLogin } from '../../utils/auth'
+import { authOptions } from '../api/auth/[...nextauth]'
 
 interface ProfileProps {
-  userData: User;
+  userData: User
   repoData: Repository[]
 }
-
 
 export default function Profile({ userData, repoData }: ProfileProps) {
   return (
@@ -46,59 +45,67 @@ export default function Profile({ userData, repoData }: ProfileProps) {
               <span>{userData.followers}</span>
               Followers
             </div>
-            <div>
-              <span>38</span>
-              Contributions
-            </div>
           </RepositoryInformation>
 
-          <Button>Log out</Button>
-
           <CardContainer>
-            {
-              repoData.map(repo => (
-                <Card key={repo.id} repo={repo} />
-              ))
-            }
+            {repoData.map((repo) => (
+              <Card key={repo.id} repo={repo} />
+            ))}
           </CardContainer>
         </Container>
       </ProfileContainer>
       <Footer>
         <div>
           <span>Designed & built by Gabriel Mercante</span>
-          <Link href={userData.url}><IoLogoGithub /></Link>
+          <Link href={userData.url}>
+            <IoLogoGithub />
+          </Link>
         </div>
       </Footer>
     </div>
   )
 }
 
+interface GithubSession extends Session {
+  accessToken: string
+}
 
-export async function getServerSideProps({ req, res }: GetServerSidePropsContext) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   try {
+    const { req, res } = context
+
     res.setHeader(
       'Cache-Control',
       'public, s-maxage=10, stale-while-revalidate=59'
     )
 
+    const session = (await getServerSession(
+      req,
+      res,
+      authOptions
+    )) as GithubSession
 
-    // const userResponse = await fetch('http://localhost:3000/api/user');
-    // const userData = await userResponse.json();
+    if (session) {
+      req.headers.authorization = session.accessToken
 
-    // const repoResponse = await fetch('http://localhost:3000/api/repositories');
-    // const repoData = await repoResponse.json();
+      const userResult = await fetch('http://localhost:3000/api/user')
+      const repoResult = await fetch('http://localhost:3000/api/repositories')
 
-    const userData = await getUserData();
-    const repoData = await getRepoData();
+      const userData = await userResult.json()
+      const repoData = await repoResult.json()
 
-    return {
-      props: {
-        userData,
-        repoData
+      return {
+        props: {
+          userData,
+          repoData,
+        },
       }
     }
+
+    redirectToLogin(context)
+
+    return { props: {} }
   } catch (error: any) {
-    console.log(error.message)
-    throw new Error(error.message);
+    throw new Error(error.message)
   }
 }

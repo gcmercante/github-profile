@@ -17,4 +17,9 @@ export const GlobalStyle = createGlobalStyle`
   body, input, textarea, button {
     font: 400 1rem 'Gothic A1', sans-serif;
   }
+
+  svg {
+    max-width: 100%;
+    vertical-align: middle;
+  }
 `

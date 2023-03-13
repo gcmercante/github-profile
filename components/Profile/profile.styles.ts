@@ -1,14 +1,8 @@
 import styled from "styled-components";
 
-export const Header = styled.header`
-  height: 16rem;
-  background-color: ${props => props.theme.header};
-  width: 100%;
-`
-
 export const ProfileContainer = styled.div`
   /* height: 100vh; */
-`
+`;
 
 export const Container = styled.main`
   padding: 0 0.5rem;
@@ -18,7 +12,7 @@ export const Container = styled.main`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`
+`;
 
 interface StyledImageProps {
   url: string;
@@ -29,13 +23,13 @@ export const StyledImage = styled.div<StyledImageProps>`
   height: 8rem;
   overflow: hidden;
   border-radius: 999px;
-  
-  background-image: url(${props => props.url});
+
+  background-image: url(${(props) => props.url});
   background-size: cover;
 
   margin-top: -4rem;
   margin-bottom: 2rem;
-`
+`;
 
 export const RepositoryInformation = styled.div`
   display: flex;
@@ -52,40 +46,21 @@ export const RepositoryInformation = styled.div`
       display: block;
       margin: 0 auto;
       padding: 0 0.5rem;
-      background-color: ${props => props.theme.sub};
+      background-color: ${(props) => props.theme.sub};
       border-radius: 999px;
     }
   }
 
   margin-bottom: 2rem;
 
-  @media(max-width: 400px) {
+  @media (max-width: 400px) {
     flex-direction: column;
   }
-`
-
-export const Button = styled.button`
-  border: transparent;
-  box-shadow: 0 0 0 2px ${props => props.theme.base};
-  background-color: transparent;
-  color: ${props => props.theme.base};
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
-  margin-bottom: 2rem;
-  font-size: 1.5rem;
-
-  cursor: pointer;
-
-  &:hover {
-    outline: 0;
-    color: ${props => props.theme.sub};
-    box-shadow: 0 0 0 2px ${props => props.theme.sub};
-  }
-`
+`;
 
 export const Footer = styled.footer`
   padding: 1rem 0.5rem;
-  
+
   div {
     margin: 0 auto;
     max-width: 800px;
@@ -96,12 +71,12 @@ export const Footer = styled.footer`
   a {
     cursor: pointer;
     text-decoration: none;
-    color: ${props => props.theme.base};
+    color: ${(props) => props.theme.base};
 
     transition: color 0.2s;
-    
+
     &:hover {
-      color: ${props => props.theme.sub};
+      color: ${(props) => props.theme.sub};
     }
   }
 
@@ -109,7 +84,7 @@ export const Footer = styled.footer`
     width: 22px;
     height: 22px;
   }
-`
+`;
 
 export const CardContainer = styled.div`
   margin-bottom: 10rem;
@@ -126,7 +101,7 @@ export const CardContainer = styled.div`
     align-items: center;
     justify-content: center;
   }
-`
+`;
 
 export const NameContainer = styled.div`
   display: flex;
@@ -136,6 +111,6 @@ export const NameContainer = styled.div`
   margin-bottom: 1rem;
 
   span {
-    color: ${props => props.theme.sub};
+    color: ${(props) => props.theme.sub};
   }
-`
+`;

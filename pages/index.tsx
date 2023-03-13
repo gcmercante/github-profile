@@ -1,7 +1,12 @@
+import { GetServerSidePropsContext } from 'next'
+import { redirectToLogin } from '../utils/auth'
+
 export default function Home() {
-  return (
-   <div>
-    <h1>Home</h1>
-   </div>
-  )
+  return <></>
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  redirectToLogin(context)
+
+  return { props: {} }
 }
