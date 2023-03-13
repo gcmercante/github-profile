@@ -3,8 +3,9 @@ import { Button, HeaderContainer } from './header.styles'
 
 export function Header() {
   function handleLogout() {
-    signOut({ callbackUrl: `${process.env.BASE_URL}/login` })
+    signOut()
   }
+
   return (
     <HeaderContainer>
       <div>
