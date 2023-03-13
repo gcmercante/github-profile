@@ -1,9 +1,11 @@
 import { GetServerSidePropsContext } from 'next'
 import { getServerSession, Session } from 'next-auth'
 import Link from 'next/link'
+import { useEffect, useRef, useState } from 'react'
 import { IoLogoGithub } from 'react-icons/io5'
 import { Card } from '../../components/Card'
 import { Header } from '../../components/Header'
+import Loader from '../../components/Loader'
 import {
   CardContainer,
   Container,
@@ -23,7 +25,63 @@ interface ProfileProps {
   repoData: Repository[]
 }
 
-export default function Profile({ userData, repoData }: ProfileProps) {
+export default function Profile({
+  userData,
+  repoData: initialRepoData,
+}: ProfileProps) {
+  const [repoData, setRepoData] = useState<Repository[]>(initialRepoData)
+
+  const [pageNumber, setPageNumber] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [noMoreData, setNoMoreData] = useState(false)
+  const endOfListRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    async function loadMore() {
+      try {
+        if (loading) return
+        if (noMoreData) return
+
+        setLoading(true)
+        setPageNumber((prevPageNumber) => prevPageNumber + 1)
+
+        const response = await fetch(
+          `/api/repositories?page=${pageNumber}&per_page=10`
+        )
+
+        const newRepoData = await response.json()
+
+        if (!newRepoData.length) {
+          setNoMoreData(true)
+        }
+
+        setRepoData((prevRepoData) => [...prevRepoData, ...newRepoData])
+        setLoading(false)
+      } catch (error: any) {
+        throw new Error(error)
+      }
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const firstEntry = entries[0]
+        if (firstEntry.isIntersecting) {
+          loadMore()
+        }
+      },
+      { rootMargin: '200px' }
+    )
+
+    if (endOfListRef.current) {
+      observer.observe(endOfListRef.current)
+    }
+
+    return () => {
+      if (endOfListRef.current) {
+        observer.unobserve(endOfListRef.current)
+      }
+    }
+  }, [loading, pageNumber, noMoreData])
+
   return (
     <div>
       <ProfileContainer>
@@ -51,6 +109,8 @@ export default function Profile({ userData, repoData }: ProfileProps) {
             {repoData.map((repo) => (
               <Card key={repo.id} repo={repo} />
             ))}
+            <div ref={endOfListRef}></div>
+            {loading && <Loader progress={25} size={10} hideLabel />}
           </CardContainer>
         </Container>
       </ProfileContainer>
@@ -89,7 +149,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       req.headers.authorization = session.accessToken
 
       const userResult = await fetch(`${process.env.BASE_URL}/api/user`)
-      const repoResult = await fetch(`${process.env.BASE_URL}/api/repositories`)
+      const repoResult = await fetch(
+        `${process.env.BASE_URL}/api/repositories?page=1&per_page=10`
+      )
 
       const userData = await userResult.json()
       const repoData = await repoResult.json()
