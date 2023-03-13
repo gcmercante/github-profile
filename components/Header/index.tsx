@@ -3,7 +3,7 @@ import { Button, HeaderContainer } from './header.styles'
 
 export function Header() {
   function handleLogout() {
-    signOut({ callbackUrl: 'http://localhost:3000/login' })
+    signOut({ callbackUrl: `${process.env.BASE_URL}/login` })
   }
   return (
     <HeaderContainer>
