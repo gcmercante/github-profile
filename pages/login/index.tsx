@@ -2,7 +2,11 @@ import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { IoLogoGithub } from 'react-icons/io5'
 import Loader from '../../components/Loader'
-import { Button, LoadingContainer, LoginContainer } from './login.styles'
+import {
+  Button,
+  LoadingContainer,
+  LoginContainer,
+} from '../../components/Login/login.styles'
 
 export default function Login() {
   const { data: session, status } = useSession()

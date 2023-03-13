@@ -88,8 +88,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     if (session) {
       req.headers.authorization = session.accessToken
 
-      const userResult = await fetch('http://localhost:3000/api/user')
-      const repoResult = await fetch('http://localhost:3000/api/repositories')
+      const userResult = await fetch(`${process.env.BASE_URL}/api/user`)
+      const repoResult = await fetch(`${process.env.BASE_URL}/api/repositories`)
 
       const userData = await userResult.json()
       const repoData = await repoResult.json()
