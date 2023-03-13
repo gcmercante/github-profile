@@ -7,14 +7,23 @@ interface RepositoryRequest {
   data: RepositoryFromGit[]
 }
 
-export async function getRepoData(
-  token: string,
-  { page, perPage }: { page: string; perPage: string }
-) {
+interface GetRepoDataProps {
+  token: string
+  page: string
+  perPage: string
+  userName: string
+}
+
+export async function getRepoData({
+  token,
+  page,
+  perPage,
+  userName,
+}: GetRepoDataProps) {
   const gitHub = getGithubService(token)
 
   const { data } = (await gitHub.request(
-    `GET /users/gcmercante/repos?page=${page}&per_page=${perPage}`
+    `GET /users/${userName}/repos?page=${page}&per_page=${perPage}`
   )) as RepositoryRequest
 
   const repos = await buildRepositoriesList(data)
@@ -28,19 +37,9 @@ export default async function handler(
 ) {
   try {
     const token = req.headers!.authorization as string
+    const { userName, page, perPage } = JSON.parse(req.body)
 
-    const { page, per_page: perPage } = req.query
-
-    if (
-      Array.isArray(page) ||
-      Array.isArray(perPage) ||
-      page == null ||
-      perPage == null
-    ) {
-      throw new Error('Invalid query params')
-    }
-
-    const repos = await getRepoData(token, { page, perPage })
+    const repos = await getRepoData({ page, perPage, userName, token })
 
     return res.status(200).json(repos)
   } catch (error: any) {

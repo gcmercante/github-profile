@@ -30,10 +30,10 @@ export default function Profile({
   repoData: initialRepoData,
 }: ProfileProps) {
   const [repoData, setRepoData] = useState<Repository[]>(initialRepoData)
-
   const [pageNumber, setPageNumber] = useState(1)
   const [loading, setLoading] = useState(false)
   const [noMoreData, setNoMoreData] = useState(false)
+
   const endOfListRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -45,9 +45,14 @@ export default function Profile({
         setLoading(true)
         setPageNumber((prevPageNumber) => prevPageNumber + 1)
 
-        const response = await fetch(
-          `/api/repositories?page=${pageNumber}&per_page=10`
-        )
+        const response = await fetch(`/api/repositories`, {
+          method: 'POST',
+          body: JSON.stringify({
+            page: pageNumber,
+            perPage: '10',
+            userName: userData.username,
+          }),
+        })
 
         const newRepoData = await response.json()
 
@@ -61,6 +66,8 @@ export default function Profile({
         throw new Error(error)
       }
     }
+    const currentEnd = endOfListRef.current
+
     const observer = new IntersectionObserver(
       (entries) => {
         const firstEntry = entries[0]
@@ -71,16 +78,16 @@ export default function Profile({
       { rootMargin: '200px' }
     )
 
-    if (endOfListRef.current) {
-      observer.observe(endOfListRef.current)
+    if (currentEnd) {
+      observer.observe(currentEnd)
     }
 
     return () => {
-      if (endOfListRef.current) {
-        observer.unobserve(endOfListRef.current)
+      if (currentEnd) {
+        observer.unobserve(currentEnd)
       }
     }
-  }, [loading, pageNumber, noMoreData])
+  }, [loading, pageNumber, noMoreData, userData.username])
 
   return (
     <div>
@@ -146,14 +153,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     )) as GithubSession
 
     if (session) {
-      req.headers.authorization = session.accessToken
+      const userResult = await fetch(`${process.env.BASE_URL}/api/user`, {
+        headers: {
+          Authorization: 'Bearer ' + session.accessToken,
+        },
+      })
+      const userData: User = await userResult.json()
 
-      const userResult = await fetch(`${process.env.BASE_URL}/api/user`)
       const repoResult = await fetch(
-        `${process.env.BASE_URL}/api/repositories?page=1&per_page=10`
+        `${process.env.BASE_URL}/api/repositories`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            page: '1',
+            perPage: '10',
+            userName: userData.username,
+          }),
+        }
       )
 
-      const userData = await userResult.json()
       const repoData = await repoResult.json()
 
       return {

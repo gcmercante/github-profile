@@ -24,7 +24,3 @@ export const authOptions: NextAuthOptions = {
 }
 
 export default NextAuth(authOptions)
-
-// export default function handler(req: NextApiRequest, res: NextApiResponse) {
-//   return NextAuth(req, res, authOptions)
-// }
