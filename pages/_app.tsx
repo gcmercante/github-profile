@@ -2,6 +2,7 @@ import { Gothic_A1 as GothicA1 } from '@next/font/google'
 import { SessionProvider } from 'next-auth/react'
 import type { AppProps } from 'next/app'
 import { ThemeProvider } from 'styled-components'
+import { UserContextProvider } from '../contexts/UserContext'
 import { GlobalStyle } from '../styles/global'
 import { defaultTheme } from '../styles/themes/default'
 
@@ -16,10 +17,12 @@ export default function App({
 }: AppProps) {
   return (
     <SessionProvider session={session}>
-      <ThemeProvider theme={defaultTheme}>
-        <GlobalStyle />
-        <Component {...pageProps} className={gothic.className} />
-      </ThemeProvider>
+      <UserContextProvider>
+        <ThemeProvider theme={defaultTheme}>
+          <GlobalStyle />
+          <Component {...pageProps} className={gothic.className} />
+        </ThemeProvider>
+      </UserContextProvider>
     </SessionProvider>
   )
 }

@@ -1,8 +1,8 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const ProfileContainer = styled.div`
   /* height: 100vh; */
-`;
+`
 
 export const Container = styled.main`
   padding: 0 0.5rem;
@@ -12,10 +12,10 @@ export const Container = styled.main`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
+`
 
 interface StyledImageProps {
-  url: string;
+  url: string
 }
 
 export const StyledImage = styled.div<StyledImageProps>`
@@ -29,7 +29,7 @@ export const StyledImage = styled.div<StyledImageProps>`
 
   margin-top: -4rem;
   margin-bottom: 2rem;
-`;
+`
 
 export const RepositoryInformation = styled.div`
   display: flex;
@@ -56,7 +56,7 @@ export const RepositoryInformation = styled.div`
   @media (max-width: 400px) {
     flex-direction: column;
   }
-`;
+`
 
 export const Footer = styled.footer`
   padding: 1rem 0.5rem;
@@ -84,7 +84,7 @@ export const Footer = styled.footer`
     width: 22px;
     height: 22px;
   }
-`;
+`
 
 export const CardContainer = styled.div`
   margin-bottom: 10rem;
@@ -101,7 +101,13 @@ export const CardContainer = styled.div`
     align-items: center;
     justify-content: center;
   }
-`;
+`
+export const LoadingContainer = styled.div`
+  grid-column: 1 / span 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
 
 export const NameContainer = styled.div`
   display: flex;
@@ -113,4 +119,4 @@ export const NameContainer = styled.div`
   span {
     color: ${(props) => props.theme.sub};
   }
-`;
+`

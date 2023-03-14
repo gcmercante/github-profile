@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from 'next'
-import { getServerSession, Session } from 'next-auth'
+import { getServerSession } from 'next-auth'
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { IoLogoGithub } from 'react-icons/io5'
 import { Card } from '../../components/Card'
 import { Header } from '../../components/Header'
@@ -10,11 +10,14 @@ import {
   CardContainer,
   Container,
   Footer,
+  LoadingContainer,
   NameContainer,
   ProfileContainer,
   RepositoryInformation,
   StyledImage,
 } from '../../components/Profile/profile.styles'
+import { UserContext } from '../../contexts/UserContext'
+import { GithubSession } from '../../shared/interfaces/GithubSession'
 import { Repository } from '../../shared/interfaces/Repository'
 import { User } from '../../shared/interfaces/User'
 import { redirectToLogin } from '../../utils/auth'
@@ -29,12 +32,22 @@ export default function Profile({
   userData,
   repoData: initialRepoData,
 }: ProfileProps) {
-  const [repoData, setRepoData] = useState<Repository[]>(initialRepoData)
+  const { addRepos, repositories, setUser } = useContext(UserContext)
+
   const [pageNumber, setPageNumber] = useState(1)
   const [loading, setLoading] = useState(false)
   const [noMoreData, setNoMoreData] = useState(false)
 
   const endOfListRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    function loadInitialData() {
+      setUser(userData)
+      addRepos(initialRepoData)
+    }
+
+    loadInitialData()
+  }, [])
 
   useEffect(() => {
     async function loadMore() {
@@ -58,9 +71,11 @@ export default function Profile({
 
         if (!newRepoData.length) {
           setNoMoreData(true)
+          setLoading(false)
+          return
         }
 
-        setRepoData((prevRepoData) => [...prevRepoData, ...newRepoData])
+        addRepos(newRepoData)
         setLoading(false)
       } catch (error: any) {
         throw new Error(error)
@@ -87,7 +102,7 @@ export default function Profile({
         observer.unobserve(currentEnd)
       }
     }
-  }, [loading, pageNumber, noMoreData, userData.username])
+  }, [loading, pageNumber, noMoreData, userData.username, addRepos])
 
   return (
     <div>
@@ -113,11 +128,15 @@ export default function Profile({
           </RepositoryInformation>
 
           <CardContainer>
-            {repoData.map((repo) => (
+            {repositories.map((repo) => (
               <Card key={repo.id} repo={repo} />
             ))}
             <div ref={endOfListRef}></div>
-            {loading && <Loader progress={25} size={20} hideLabel />}
+            {loading && (
+              <LoadingContainer>
+                <Loader progress={25} size={50} hideLabel />
+              </LoadingContainer>
+            )}
           </CardContainer>
         </Container>
       </ProfileContainer>
@@ -131,10 +150,6 @@ export default function Profile({
       </Footer>
     </div>
   )
-}
-
-interface GithubSession extends Session {
-  accessToken: string
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -153,15 +168,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     )) as GithubSession
 
     if (session) {
-      const userResult = await fetch(`${process.env.BASE_URL}/api/user`, {
-        headers: {
-          Authorization: 'Bearer ' + session.accessToken,
-        },
-      })
+      const userResult = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/user`,
+        {
+          headers: {
+            Authorization: 'Bearer ' + session.accessToken,
+          },
+        }
+      )
       const userData: User = await userResult.json()
 
       const repoResult = await fetch(
-        `${process.env.BASE_URL}/api/repositories`,
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/repositories`,
         {
           method: 'POST',
           body: JSON.stringify({

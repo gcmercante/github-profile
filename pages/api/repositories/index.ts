@@ -9,8 +9,8 @@ interface RepositoryRequest {
 
 interface GetRepoDataProps {
   token: string
-  page: string
-  perPage: string
+  page?: string
+  perPage?: string
   userName: string
 }
 
@@ -22,8 +22,18 @@ export async function getRepoData({
 }: GetRepoDataProps) {
   const gitHub = getGithubService(token)
 
+  if (page && perPage) {
+    const { data } = (await gitHub.request(
+      `GET /users/${userName}/repos?page=${page}&per_page=${perPage}`
+    )) as RepositoryRequest
+
+    const repos = await buildRepositoriesList(data)
+
+    return repos
+  }
+
   const { data } = (await gitHub.request(
-    `GET /users/${userName}/repos?page=${page}&per_page=${perPage}`
+    `GET /users/${userName}/repos`
   )) as RepositoryRequest
 
   const repos = await buildRepositoriesList(data)
