@@ -1,11 +1,11 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
-import Profile from '../..'
+import { Profile } from '../../../../components/Profile'
 import { useUserData } from '../../../../hooks/useUserData'
 
 export default function Share() {
-  const { user, repositories } = useUserData()
+  const { user } = useUserData()
 
-  return <Profile userData={user} repoData={repositories} />
+  return <Profile userData={user} />
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {

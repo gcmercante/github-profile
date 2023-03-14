@@ -5,7 +5,7 @@ import { Button, HeaderContainer } from './header.styles'
 export function Header() {
   const { user } = useUserData()
 
-  const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}/profile/${user.username}`
+  const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}/profile/${user.username}/share`
 
   function handleLogout() {
     signOut()

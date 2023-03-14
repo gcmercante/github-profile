@@ -1,21 +1,7 @@
 import { GetServerSidePropsContext } from 'next'
 import { getServerSession } from 'next-auth'
-import Link from 'next/link'
 import { useContext, useEffect, useRef, useState } from 'react'
-import { IoLogoGithub } from 'react-icons/io5'
-import { Card } from '../../components/Card'
-import { Header } from '../../components/Header'
-import Loader from '../../components/Loader'
-import {
-  CardContainer,
-  Container,
-  Footer,
-  LoadingContainer,
-  NameContainer,
-  ProfileContainer,
-  RepositoryInformation,
-  StyledImage,
-} from '../../components/Profile/profile.styles'
+import { Profile } from '../../components/Profile'
 import { UserContext } from '../../contexts/UserContext'
 import { GithubSession } from '../../shared/interfaces/GithubSession'
 import { Repository } from '../../shared/interfaces/Repository'
@@ -28,11 +14,11 @@ interface ProfileProps {
   repoData: Repository[]
 }
 
-export default function Profile({
+export default function ProfilePage({
   userData,
   repoData: initialRepoData,
 }: ProfileProps) {
-  const { addRepos, repositories, setUser } = useContext(UserContext)
+  const { addRepos, setUser } = useContext(UserContext)
 
   const [pageNumber, setPageNumber] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -105,50 +91,11 @@ export default function Profile({
   }, [loading, pageNumber, noMoreData, userData.username, addRepos])
 
   return (
-    <div>
-      <ProfileContainer>
-        <Header />
-        <Container>
-          <StyledImage url={userData.avatar} />
-
-          <NameContainer>
-            <strong>{userData.name}</strong>
-            <span>{userData.username}</span>
-          </NameContainer>
-
-          <RepositoryInformation>
-            <div>
-              <span>{userData.repositories}</span>
-              Repositories
-            </div>
-            <div>
-              <span>{userData.followers}</span>
-              Followers
-            </div>
-          </RepositoryInformation>
-
-          <CardContainer>
-            {repositories.map((repo) => (
-              <Card key={repo.id} repo={repo} />
-            ))}
-            <div ref={endOfListRef}></div>
-            {loading && (
-              <LoadingContainer>
-                <Loader progress={25} size={50} hideLabel />
-              </LoadingContainer>
-            )}
-          </CardContainer>
-        </Container>
-      </ProfileContainer>
-      <Footer>
-        <div>
-          <span>Designed & built by Gabriel Mercante</span>
-          <Link href={userData.url}>
-            <IoLogoGithub />
-          </Link>
-        </div>
-      </Footer>
-    </div>
+    <Profile
+      userData={userData}
+      endOfListRef={endOfListRef}
+      loading={loading}
+    />
   )
 }
 
