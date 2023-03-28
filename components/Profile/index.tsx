@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { MutableRefObject } from 'react'
 import { IoLogoGithub } from 'react-icons/io5'
-import { useUserData } from '../../hooks/useUserData'
+import { Repository } from '../../shared/interfaces/Repository'
 import { User } from '../../shared/interfaces/User'
 import { Card } from '../Card'
 import { Header } from '../Header'
@@ -21,10 +21,15 @@ interface ProfileProps {
   userData: User
   endOfListRef?: MutableRefObject<HTMLDivElement | null>
   loading?: boolean
+  repoData: Repository[]
 }
 
-export function Profile({ userData, endOfListRef, loading }: ProfileProps) {
-  const { repositories } = useUserData()
+export function Profile({
+  userData,
+  endOfListRef,
+  loading,
+  repoData,
+}: ProfileProps) {
   return (
     <div>
       <ProfileContainer>
@@ -49,9 +54,9 @@ export function Profile({ userData, endOfListRef, loading }: ProfileProps) {
           </RepositoryInformation>
 
           <CardContainer>
-            {repositories.map((repo) => (
-              <Card key={repo.id} repo={repo} />
-            ))}
+            {repoData.map((repo) => {
+              return <Card key={repo.id} repo={repo} />
+            })}
             <div ref={endOfListRef}></div>
             {loading && (
               <LoadingContainer>

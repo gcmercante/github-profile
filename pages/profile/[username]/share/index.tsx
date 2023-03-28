@@ -1,11 +1,15 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { Profile } from '../../../../components/Profile'
-import { useUserData } from '../../../../hooks/useUserData'
+import { Repository } from '../../../../shared/interfaces/Repository'
+import { User } from '../../../../shared/interfaces/User'
 
-export default function Share() {
-  const { user } = useUserData()
+interface ProfileProps {
+  userData: User
+  repoData: Repository[]
+}
 
-  return <Profile userData={user} />
+export default function Share({ userData, repoData }: ProfileProps) {
+  return <Profile userData={userData} repoData={repoData} />
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -15,9 +19,28 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps<ProfileProps> = async ({
+  params,
+}) => {
+  const userRequest = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/user`)
+
+  const userData = await userRequest.json()
+
+  const repoRequest = await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/repositories`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ userName: userData.username }),
+    }
+  )
+
+  const repoData = await repoRequest.json()
+
   return {
-    props: {},
-    revalidate: 60 * 60 * 24, // 1 day
+    props: {
+      repoData,
+      userData,
+    },
+    revalidate: 60 * 60 * 24,
   }
 }

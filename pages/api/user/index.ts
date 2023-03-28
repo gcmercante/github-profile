@@ -34,6 +34,8 @@ export default async function handler(
 
     return res.status(200).json(user)
   } catch (error: any) {
-    return res.status(error.response.status).json({ message: error.message })
+    return res
+      .status(error.response?.status ?? 500)
+      .json({ message: error.message })
   }
 }

@@ -18,7 +18,7 @@ export default function ProfilePage({
   userData,
   repoData: initialRepoData,
 }: ProfileProps) {
-  const { addRepos, setUser } = useContext(UserContext)
+  const { addRepos, setUser, repositories } = useContext(UserContext)
 
   const [pageNumber, setPageNumber] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -95,6 +95,7 @@ export default function ProfilePage({
       userData={userData}
       endOfListRef={endOfListRef}
       loading={loading}
+      repoData={repositories}
     />
   )
 }
